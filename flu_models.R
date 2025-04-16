@@ -3,6 +3,7 @@ library(lubridate)
 library(forecast)
 library(tseries)
 
+# change the file path ad hoc
 flu_df <- read.csv("/Users/thuptenwangpo/Downloads/VIW_FNT.csv", stringsAsFactors = FALSE)
 flu_df$ISO_WEEKSTARTDATE <- ymd(flu_df$ISO_WEEKSTARTDATE)
 flu_df <- arrange(flu_df, ISO_WEEKSTARTDATE)
