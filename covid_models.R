@@ -4,8 +4,7 @@ library(forecast)
 library(tseries)
 library(scales)
 
-df <- read.csv("time series project/time_series_covid19_confirmed_global.csv")
-
+df <- read.csv("C:/Users/visma/Downloads/time_series_covid19_confirmed_global.csv")
 meta_cols <- names(df)[1:4]
 raw_date_cols <- names(df)[5:ncol(df)]
 cleaned_dates <- gsub("\\.", "/", gsub("^X", "", raw_date_cols))
@@ -37,6 +36,7 @@ ts_covid <- ts(monthly_cases$New_Cases,
 autoplot(ts_covid) +
   ggtitle("Global Monthly New COVID-19 Cases") +
   xlab("Time") + ylab("New Cases")
+
 
 # ADF Test for stationarity
 adf_result <- adf.test(ts_covid)
@@ -79,3 +79,33 @@ fc <- forecast(best_model, h = 6)
 autoplot(fc) +
   ggtitle("6-Month Forecast of Global Monthly COVID-19 Cases") +
   xlab("Time") + ylab("Forecasted Cases")
+
+
+# Extract residuals
+resid_covid <-checkresiduals(fit_ma)
+
+
+# Residuals over time
+autoplot(resid_covid) +
+  ggtitle("Residuals over Time - COVID-19 ARIMA(0,0,3)") +
+  xlab("Time") + ylab("Residuals")
+
+# Histogram and QQ plot
+ggplot(data.frame(resid = resid_covid), aes(x = resid)) +
+  geom_histogram(bins = 15, fill = "skyblue", color = "black") +
+  ggtitle("Histogram of Residuals")
+
+qqnorm(resid_covid)
+qqline(resid_covid, col = "red")
+
+# ACF of residuals
+acf(resid_covid, main = "ACF of Residuals - COVID-19")
+
+# Ljung-Box Test (to check white noise)
+Box.test(resid_covid, lag = 10, type = "Ljung-Box")
+
+# Shapiro-Wilk Normality Test
+shapiro.test(resid_covid)
+
+
+
